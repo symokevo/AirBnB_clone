@@ -1,84 +1,155 @@
 #!/usr/bin/python3
-"""
-Contains basemodel test cases.
-"""
-
+"""unittest module for basemodel class
+unittest classes:
+    TestBase_Instantiation
+    TestBaseClass
+    """
+import models
 from datetime import datetime
+import time
 import unittest
 from models.base_model import BaseModel
+import pycodestyle
 
 
-class TestBaseModel(unittest.TestCase):
-    """
-    test class for basemodel class
-    """
+class TestBase_Instantiation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """ sets up class instance"""
+        cls.bm = BaseModel()
 
-    def test_instance(self):
-        """obj should be a BaseModel instance"""
+    @classmethod
+    def tearDownClass(cls):
+        """tear Down Class Instance"""
+        del cls.bm
 
-        b1 = BaseModel()
-        self.assertIsInstance(b1, BaseModel)
+    def test_base_model_type(self):
+        self.assertEqual(BaseModel, type(self.bm))
 
-    def test_new_obj(self):
-        """new diff instances should be created"""
-        b1 = BaseModel()
-        b2 = BaseModel()
-        self.assertFalse(b1 is b2)
-
-    def test_instance_dict(self):
-        """intsanciate an old obj with the help of to_dict"""
-        b1 = BaseModel()
-        my_model_dict = b1.to_dict()
-        b2 = BaseModel(**my_model_dict)
-        self.assertEqual(b1.id, b2.id)
-
-    def test_save(self):
-        """test save method"""
-        b1 = BaseModel()
-        old = b1.updated_at
-        b1.save()
-        self.assertNotEqual(old, b1.updated_at)
-
-    def test_save_error(self):
-        """test save method with two positional arg"""
-        b3 = BaseModel()
-        with self.assertRaises(ValueError) as context:
-            b3.save("me")
-
-    def test_str(self):
-        """test the __str__ majic method"""
-
-        b = BaseModel()
-        b_str = "[BaseModel] ({}) {}".format(b.id, b.__dict__)
-        self.assertEqual(b_str, str(b))
+    def test_new_instances_in_objects(self):
+        self.assertIn(self.bm, models.storage.all().values())
 
     def test_id(self):
-        """It should have a string id"""
-        b1 = BaseModel()
+        """test if id is string after is has been
+        converted to string in BaseModel()"""
+        self.assertEqual(type(self.bm.id), str)
 
-        self.assertIsNotNone(b1.id)
-        self.assertIsInstance(b1.id, str)
-
-    def test_created_at(self):
-        """It should have a datetime created_at attribute"""
-        b1 = BaseModel()
-
-        self.assertIsNotNone(b1.created_at)
-        self.assertIsInstance(b1.created_at, datetime)
+    def test_id_is_unique(self):
+        """test if same id occur twice"""
+        bm2 = BaseModel()
+        self.assertNotEqual(self.bm.id, bm2.id)
 
     def test_updated_at(self):
-        """It should have a datetime updated_at attribute"""
-        b1 = BaseModel()
+        """test to comfirm 'updated_at' attribute is a datetime object
+        and also not private attr"""
+        self.assertEqual(type(self.bm.updated_at), datetime)
 
-        self.assertIsNotNone(b1.updated_at)
-        self.assertIsInstance(b1.updated_at, datetime)
+    def test_created_at(self):
+        """confirm if 'created_at' is a public datetime"""
+        self.assertEqual(type(self.bm.created_at), datetime)
 
-    def test_to_dict(self):
-        """It should have a datetime updated_at attribute"""
-        b1 = BaseModel()
+    def test_args_instantiation(self):
+        """test to confirm args is unused"""
+        BaseModel(None)
+        self.assertNotIn(None, BaseModel.__dict__.values())
 
-        self.assertIsInstance(b1.to_dict(), dict)
+    def test_kwargs_instantiation(self):
+        """test key word arguments instantiation"""
+        dateNtime = datetime.now()
+        dateNtime2 = dateNtime.isoformat()
+        bm = BaseModel(id="123", created_at=dateNtime2, updated_at=dateNtime2)
+        self.assertEqual(bm.id, "123")
+        self.assertEqual(bm.created_at, dateNtime)
+        self.assertEqual(bm.updated_at, dateNtime)
+
+    def test_args_kwargs_instantiation(self):
+        """test to confirm that BaseModel will discard args
+        and make us of the kwargs"""
+        date_time = datetime.now()
+        formated_date_time = date_time.isoformat()
+        bm = BaseModel("Ajiboye", id="123", created_at=formated_date_time,
+                       updated_at=formated_date_time)
+        self.assertEqual(bm.id, "123")
+        self.assertEqual(bm.created_at, date_time)
+        self.assertEqual(bm.updated_at, date_time)
+
+    def test_created_at(self):
+        """test two different created_at time"""
+        bm1 = self.bm
+        time.sleep(0.5)
+        bm2 = BaseModel()
+        self.assertLess(bm1.created_at, bm2.created_at)
+
+    def test_udated_at(self):
+        """test two different updated time"""
+        bm1 = self.bm
+        time.sleep(0.5)
+        bm2 = BaseModel()
+        self.assertLess(bm1.updated_at, bm2.updated_at)
 
 
-if __name__ == "__main__":
-    unittest.main(TestBaseModel)
+class TestBaseClass(unittest.TestCase):
+    """Test for BaseModel class attributes and methods"""
+    @classmethod
+    def setUpClass(cls):
+        """Set up class instance"""
+        cls.testbase = BaseModel()
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.testbase
+
+    def test_pycodestyle_compliance_base_model(self):
+        """test for PEP8/pycodestyle compliance"""
+        style = pycodestyle.StyleGuide(quiet=True)
+        result = style.check_files(['models/base_model.py'])
+        self.assertEqual(result.total_errors, 0, "Found errors or warnings")
+
+    def test_save_method(self):
+        """Test save method to confirm if updated time changes etc."""
+        first_instance = BaseModel()
+        original_time = first_instance.updated_at
+        time.sleep(0.5)
+        first_instance.save()
+        new_updated_time = first_instance.updated_at
+        self.assertNotEqual(original_time, new_updated_time)
+
+    def test_save_with_arg(self):
+        self.testbase
+        with self.assertRaises(TypeError):
+            self.testbase.save(None)
+
+    def test_saves_updates_file(self):
+        self.testbase.save()
+        Id = "BaseModel." + self.testbase.id
+        with open("file.json", 'r') as file:
+            self.assertIn(Id, file.read())
+
+    def test_to_dict_method(self):
+        """Test to_dict_method whether it return a dict object"""
+        new_dict = self.testbase.to_dict()
+        self.assertIsInstance(new_dict['created_at'], str)
+        self.assertIsInstance(new_dict['updated_at'], str)
+        self.assertEqual(new_dict['__class__'], 'BaseModel')
+
+    def test_dict_new_attributes(self):
+        """test that dict contains newly added attributes """
+        self.testbase
+        self.testbase.name = "Holberton_School"
+        self.testbase.my_number = 98
+        _dict = self.testbase.to_dict()
+        self.assertIn("name", _dict)
+        self.assertIn("my_number", _dict)
+
+    def test_to_dict_with_arg(self):
+        self.testbase
+        with self.assertRaises(TypeError):
+            self.testbase.to_dict(None)
+
+    def test_str_overide(self):
+        _dict = self.testbase.__dict__
+        expected = "[BaseModel] ({}) {}".format(self.testbase.id, _dict)
+        self.assertEqual(expected, str(self.testbase))
+
+    if '__name__' == '__main__':
+        unittest.main()

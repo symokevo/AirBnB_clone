@@ -17,10 +17,10 @@ The console is a command interpreter to manage objects abstraction between objec
 
 To see the fundamental background of the project visit the [Wiki](https://github.com/ralexrivero/AirBnB_clone/wiki).
 
-The console will perform the following tasks:
+The console performs the following tasks:
 
 * create a new object
-* retrive an object from a file
+* retrieve an object from a file
 * do operations on objects
 * destroy an object
 
@@ -37,15 +37,15 @@ All the classes are handled by the `Storage` engine in the `FileStorage` Class.
   * [pycodestyle (version 2.7.*)](https://pypi.org/project/pycodestyle/)
   * [PEP8](https://pep8.org/)
 
-All the development and testing was runned over an operating system Ubuntu 20.04 LTS using programming language Python 3.8.3. The editors used were VIM 8.1.2269, VSCode 1.6.1 and Atom 1.58.0 . Control version using Git 2.25.1.
+All development and testing were carried out using an Ubuntu 20.04 LTS operating system with the programming language Python 3.8.3. VIM 8.1.2269, VSCode 1.6.1, and Atom 1.58.0 were utilized as editors. Git 2.25.1 is used to control the version.
 
 ## 0x03 Installation
 
 ```bash
-git clone https://github.com/aysuarex/AirBnB_clone.git
+git clone https://github.com/Adeleye080/AirBnB_clone.git
 ```
 
-change to the `AirBnb` directory and run the command:
+in the `AirBnb` directory run the command:
 
 ```bash
  ./console.py
@@ -95,7 +95,7 @@ $
 
 ## 0x04 Testing
 
-All the test are defined in the `tests` folder.
+unittests: all tests are in the `tests` folder.
 
 ### Documentation
 
@@ -202,7 +202,7 @@ show <class> <id>
 
 ```bash
 (hbnb) show BaseModel 6cfb47c4-a434-4da7-ac03-2122624c3762
-[BaseModel] (a) [BaseModel] (6cfb47c4-a434-4da7-ac03-2122624c3762) {'id': '6cfb47c4-a434-4da7-ac03-2122624c3762', 'created_at': datetime.datetime(2021, 11, 14, 3, 28, 45, 571360), 'updated_at': datetime.datetime(2021, 11, 14, 3, 28, 45, 571389)}
+[BaseModel] (a) [BaseModel] (6cfb47c4-a434-4da7-ac03-2122624c3762) {'id': '6cfb47c4-a434-4da7-ac03-2122624c3762', 'created_at': datetime.datetime(2022, 9, 5, 3, 28, 45, 571360), 'updated_at': datetime.datetime(2022, 9, 5, 3, 28, 45, 571389)}
 (hbnb)
 ```
 
@@ -229,8 +229,8 @@ show <class> <id>
 (hbnb) create BaseModel
 e45ddda9-eb80-4858-99a9-226d4f08a629
 (hbnb) all BaseModel
-["[BaseModel] (4c8f7ebc-257f-4ed1-b26b-e7aace459897) [BaseModel] (4c8f7ebc-257f-4ed1-b26b-e7aace459897) {'id': '4c8f7ebc-257f-4ed1-b26b-e7aace459897', 'created_at': datetime.datetime(2021, 11, 13, 22, 19, 19, 447155), 'updated_at': datetime.datetime(2021, 11, 13, 22, 19, 19, 447257), 'name': 'My First Model', 'my_number': 89}"]
-["[BaseMode
+["[BaseModel] (4c8f7ebc-257f-4ed1-b26b-e7aace459897) [BaseModel] (4c8f7ebc-257f-4ed1-b26b-e7aace459897) {'id': '4c8f7ebc-257f-4ed1-b26b-e7aace459897', 'created_at': datetime.datetime(2022, 9, 5, 22, 19, 19, 447155), 'updated_at': datetime.datetime(2022, 9, 5, 22, 19, 19, 447257), 'name': 'My First Model', 'my_number': 89}"]
+["[BaseMode...
 ```
 
 * count
@@ -255,12 +255,26 @@ e952b772-80a5-41e9-b728-6bc4dc5c21b4
 ```bash
 (hbnb) create User
 1afa163d-486e-467a-8d38-3040afeaa1a1
-(hbnb) update User 1afa163d-486e-467a-8d38-3040afeaa1a1 email "aysuarex@gmail.com"
+(hbnb) update User 1afa163d-486e-467a-8d38-3040afeaa1a1 email "Alx@alx.com"
 (hbnb) show User 1afa163d-486e-467a-8d38-3040afeaa1a1
-[User] (s) [User] (1afa163d-486e-467a-8d38-3040afeaa1a1) {'id': '1afa163d-486e-467a-8d38-3040afeaa1a1', 'created_at': datetime.datetime(2021, 11, 14, 23, 42, 10, 502157), 'updated_at': datetime.datetime(2021, 11, 14, 23, 42, 10, 502186), 'email': 'aysuarex@gmail.com'}
+[User] (s) [User] (1afa163d-486e-467a-8d38-3040afeaa1a1) {'id': '1afa163d-486e-467a-8d38-3040afeaa1a1', 'created_at': datetime.datetime(2021, 11, 14, 23, 42, 10, 502157), 'updated_at': datetime.datetime(2021, 11, 14, 23, 42, 10, 502186), 'email': 'Alx@alx.com'}
 (hbnb)
 
 ```
 ## Authors
-- [Godwin Aigbuza](https://@github.com/godwinerons)
-- [Onome Mafuru](https://@github.com/Omafuru)
+<details>
+    <summary>Ajiboye Adeleye Pius</summary>
+    <ul>
+    <li><a href="https://www.github.com/Adeleye080">Github</a></li>
+    <li><a href="https://www.linkedin.com/in/ajiboye-adeleye-b561a7211/">LinkedIn</a></li>
+    <li><a href="mailto:ajiboyeadeleye080@gmail.com">e-mail</a></li>
+    </ul>
+</details>
+<details>
+    <summary>Aisosa Aghedo</summary>
+    <ul>
+    <li><a href="https://github.com/AisosaAghedo"> Github </a></li>
+    <li><a href="mailto:mailto:allysonaghedo@gmail.com"> e-mail </a></li>
+    <li><a href="https://www.linkedin.com/in/aisosa-aghedo-aa412b232"> LinkedIn </a></li>
+    </ul>
+</details>
