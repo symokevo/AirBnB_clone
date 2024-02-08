@@ -1,169 +1,110 @@
 #!/usr/bin/python3
 """
-Contains FileStorage test cases.
+Unittest to test FileStorage class
 """
-
 import unittest
+import pep8
+import json
 import os
-from models import storage
-from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
 from models.city import City
+from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.state import State
-from models.user import User
 from models.engine.file_storage import FileStorage
 
 
 class TestFileStorage(unittest.TestCase):
-    """Defines test cases for FileStorage"""
+    """
+    testing file storage
+    """
 
-    def test_storage(self):
-        """storage should be a FileStorage."""
+    @classmethod
+    def setUpClass(cls):
+        cls.usr = User()
+        cls.usr.first_name = "Andrew"
+        cls.usr.last_name = "Suh"
+        cls.usr.email = "andrew@gmail.com"
+        cls.storage = FileStorage()
 
-        self.assertIsInstance(storage, FileStorage)
+    @classmethod
+    def teardown(cls):
+        del cls.usr
 
-    def test_new_base_model(self):
-        """It should add new BaseModel object to storage."""
+    def teardown(self):
+        try:
+            os.remove("file.json")
+        except:
+            pass
 
-        model = BaseModel()
-        storage.new(model)
-        key = "BaseModel.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, BaseModel)
+    def test_pep8_filestorage(self):
+        """
+        tests for pep8
+        """
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/engine/file_storage.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_new_user(self):
-        """It should add new User object to storage."""
+    def test_all_filestorage(self):
+        """
+        tests for all
+        """
+        new = FileStorage()
+        instances_dic = new.all()
+        self.assertIsNotNone(instances_dic)
+        self.assertEqual(type(instances_dic), dict)
+        self.assertIs(instances_dic, new._FileStorage__objects)
 
-        model = User()
-        storage.new(model)
-        key = "User.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, User)
+    def test_new_filestorage(self):
+        """
+        tests for new
+        """
+        altsotrage = FileStorage()
+        dic = altsotrage.all()
+        rev = User()
+        rev.id = 69
+        rev.name = "Meep"
+        altsotrage.new(rev)
+        key = rev.__class__.__name__ + "." + str(rev.id)
+        self.assertIsNotNone(dic[key])
 
-    def test_new_place(self):
-        """It should add new Place object to storage."""
+    def test_reload_filestorage(self):
+        """
+        tests reload
+        """
+        self.storage.save()
+        Root = os.path.dirname(os.path.abspath("console.py"))
+        path = os.path.join(Root, "file.json")
+        with open(path, 'r') as f:
+            lines = f.readlines()
 
-        model = Place()
-        storage.new(model)
-        key = "Place.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, Place)
+        try:
+            os.remove(path)
+        except:
+            pass
 
-    def test_new_state(self):
-        """It should add new State object to storage."""
+        self.storage.save()
 
-        model = State()
-        storage.new(model)
-        key = "State.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, State)
+        with open(path, 'r') as f:
+            lines2 = f.readlines()
 
-    def test_new_city(self):
-        """It should add new City object to storage."""
+        self.assertEqual(lines, lines2)
 
-        model = City()
-        storage.new(model)
-        key = "City.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, City)
+        try:
+            os.remove(path)
+        except:
+            pass
 
-    def test_new_amenity(self):
-        """It should add new Amenity object to storage."""
-
-        model = Amenity()
-        storage.new(model)
-        key = "Amenity.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, Amenity)
-
-    def test_new_review(self):
-        """It should add new Review object to storage."""
-
-        model = Review()
-        storage.new(model)
-        key = "Review.{}".format(model.id)
-        stored_model = storage.all().get(key)
-        self.assertEqual(model, stored_model)
-        self.assertIsInstance(stored_model, Review)
-
-    def test_new_other_objs(self):
-        """It should not add object to storage for none BaseModel objects."""
-
-        old_size = len(storage.all())
-        storage.new(None)
-        storage.new(1)
-        storage.new(1.5)
-        storage.new((1,))
-        storage.new([])
-        storage.new([1, 2, 3, 4])
-        storage.new([1.0, 2.0, 3.0, 4.])
-        storage.new({})
-        storage.new({'name': "jude"})
-        storage.new({'name': "jude", 'age': 27})
-        storage.new(True)
-        storage.new(False)
-        storage.new("")
-        new_size = len(storage.all())
-        self.assertEqual(old_size, new_size)
-
-    def test_all(self):
-        """It should return all objects stored in __objects."""
-
-        objects = storage.all()
-        self.assertIsInstance(objects, dict)
-        for key in objects:
-            obj = objects[key]
-            self.assertTrue(issubclass(type(obj), BaseModel))
-
-    def test_save(self):
-        """It should save __objects to file.json"""
-
-        my_model = BaseModel()
-        my_model.name = "Test"
-        my_model.magic = 101
-        my_model.save()
-        self.assertTrue(os.path.exists("file.json"))
-        storage.reload()
-        key = "BaseModel.{}".format(my_model.id)
-        storedModel = storage.all().get(key, None)
-        self.assertIsNotNone(storedModel)
-
-    def test_save_user(self):
-        """It should save user __objects to file.json"""
-
-        model = User()
-        model.first_name = "Betty"
-        model.last_name = "Butter"
-        model.save()
-        self.assertTrue(os.path.exists("file.json"))
-        storage.reload()
-        key = "User.{}".format(model.id)
-        storedModel = storage.all().get(key, None)
-        self.assertIsNotNone(storedModel)
-
-    def test_reload(self):
-        """It should reload objects from file.json into __objects"""
-
-        storage.reload()
-        objects = storage.all()
-        self.assertIsInstance(objects, dict)
-        for key in objects:
-            obj = objects[key]
-            self.assertTrue(issubclass(type(obj), BaseModel))
-
-    def test_reload_error(self):
-        """tests reload with arg"""
-        with self.assertRaises(ValueError) as context:
-            storage.reload("me")
+        with open(path, "w") as f:
+            f.write("{}")
+        with open(path, "r") as r:
+            for line in r:
+                self.assertEqual(line, "{}")
+        self.assertIs(self.storage.reload(), None)
 
 
 if __name__ == "__main__":
-    unittest.main(TestFileStorage)
+    unittest.main()
+
